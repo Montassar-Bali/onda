@@ -1,0 +1,17 @@
+node_modules
+.next
+.pgdata
+.env
+.env.local
+*.tsbuildinfo
+next-env.d.ts
+coverage
+# secrets & local data — never commit
+.env.*
+!.env.example
+*.pem
+*.key
+# local tooling output
+.taste-skill/
+*.log
+.mail-outbox/
