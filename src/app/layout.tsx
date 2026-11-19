@@ -1,10 +1,21 @@
 import "./globals.css";
 import type { Metadata, Viewport } from "next";
-import { Plus_Jakarta_Sans } from "next/font/google";
+import localFont from "next/font/local";
 import { headers } from "next/headers";
 import { ServiceWorker } from "@/components/ServiceWorker";
 
-const jakarta = Plus_Jakarta_Sans({ subsets: ["latin", "latin-ext"], weight: ["400", "500", "600", "700", "800"], variable: "--font-jakarta", display: "swap" });
+// Self-hosted (no build-time download from Google Fonts, which can fail on CI/Vercel).
+const jakarta = localFont({
+  src: [
+    { path: "./fonts/jakarta-400.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/jakarta-500.woff2", weight: "500", style: "normal" },
+    { path: "./fonts/jakarta-600.woff2", weight: "600", style: "normal" },
+    { path: "./fonts/jakarta-700.woff2", weight: "700", style: "normal" },
+    { path: "./fonts/jakarta-800.woff2", weight: "800", style: "normal" },
+  ],
+  variable: "--font-jakarta",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: { default: "ONDA Tickets", template: "%s · ONDA Tickets" },
