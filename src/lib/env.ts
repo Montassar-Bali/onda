@@ -18,6 +18,8 @@ export function assertProductionEnv(env: NodeJS.ProcessEnv = process.env) {
   const secrets = [env.SESSION_SECRET, env.CIN_ENC_KEY, env.CIN_HMAC_KEY].filter(Boolean);
   if (new Set(secrets).size !== secrets.length) problems.push("SESSION_SECRET, CIN_ENC_KEY and CIN_HMAC_KEY must all be different");
   if (!env.APP_URL?.startsWith("https://")) problems.push("APP_URL must be the public https:// address");
+  if (!env.DATABASE_URL_UNPOOLED) problems.push("DATABASE_URL_UNPOOLED is not set (the unpooled database URL, used for migrations)");
+  if (!env.CRON_SECRET || env.CRON_SECRET.length < 16) problems.push("CRON_SECRET must be at least 16 random characters (protects the scheduled jobs)");
   if (!env.SMTP_URL) problems.push("SMTP_URL is not set — tickets are delivered by email");
   else if (!/^smtps?:\/\//.test(env.SMTP_URL)) problems.push("SMTP_URL must start with smtp:// or smtps://");
   if (problems.length) throw new Error("Refusing to start — insecure configuration:\n  - " + problems.join("\n  - "));

@@ -8,6 +8,8 @@ import { rateLimit } from "@/server/rate-limit";
 import { clientIp } from "@/server/ip";
 
 export const dynamic = "force-dynamic";
+/** Printing a 200-ticket batch or emailing a large group can take a few seconds. */
+export const maxDuration = 60;
 
 /** Largest accepted JSON body. The biggest legitimate request (a 20-person sale) is ~6 KB. */
 const MAX_BODY_BYTES = 64 * 1024;

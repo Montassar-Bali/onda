@@ -85,7 +85,7 @@ describe("client IP", () => {
 });
 
 describe("production configuration guard", () => {
-  const good = { NODE_ENV: "production", DATABASE_URL: "postgresql://u:p@db.internal:5432/onda", SESSION_SECRET: "x".repeat(44), CIN_ENC_KEY: Buffer.alloc(32, 1).toString("base64"), CIN_HMAC_KEY: Buffer.alloc(32, 2).toString("base64"), APP_URL: "https://tickets.example.com", SMTP_URL: "smtps://user:pass@smtp.example.com:465" } as unknown as NodeJS.ProcessEnv;
+  const good = { NODE_ENV: "production", DATABASE_URL: "postgresql://u:p@db.internal:5432/onda", SESSION_SECRET: "x".repeat(44), CIN_ENC_KEY: Buffer.alloc(32, 1).toString("base64"), CIN_HMAC_KEY: Buffer.alloc(32, 2).toString("base64"), APP_URL: "https://tickets.example.com", SMTP_URL: "smtps://user:pass@smtp.example.com:465", DATABASE_URL_UNPOOLED: "postgresql://u:p@db.internal:5432/onda", CRON_SECRET: "c".repeat(32) } as unknown as NodeJS.ProcessEnv;
   it("accepts a sound configuration", () => expect(() => assertProductionEnv(good)).not.toThrow());
   it("refuses weak, missing or reused secrets and plain http", () => {
     expect(() => assertProductionEnv({ ...good, SESSION_SECRET: "short" })).toThrow(/SESSION_SECRET/);

@@ -26,6 +26,9 @@ const pw = (envName: string) => {
 
 async function main() {
   if (process.env.NODE_ENV === "production") throw new Error("Refusing to seed in production");
+  // Demo data must never reach a hosted database (Vercel/Neon): only a local one.
+  const host = (() => { try { return new URL(process.env.DATABASE_URL ?? "").hostname; } catch { return ""; } })();
+  if (!["localhost", "127.0.0.1", "::1"].includes(host)) throw new Error(`Refusing to seed a non-local database (${host || "unknown host"}). Use npm run create-leader for the live site.`);
   const leaderPw = pw("SEED_LEADER_PASSWORD"), sellerPw = pw("SEED_SELLER_PASSWORD");
   const leader = await user("leader@tropical.test", "Sami (Team Leader)", "TEAM_LEADER", leaderPw);
   await user("leader2@tropical.test", "Ines (Team Leader)", "TEAM_LEADER", leaderPw);

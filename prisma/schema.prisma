@@ -19,8 +19,11 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  // Runtime connections. On Vercel Postgres (Neon) this is the pooled URL the integration creates.
+  url       = env("DATABASE_URL")
+  // Direct connection used by `prisma migrate`. Vercel Postgres (Neon) creates this variable automatically.
+  directUrl = env("DATABASE_URL_UNPOOLED")
 }
 
 // ───────────────────────────── Users & authorization ─────────────────────────────

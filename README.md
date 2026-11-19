@@ -32,6 +32,41 @@ npm run typecheck
 
 The suite proves the critical rules: atomic sales with rollback, no overselling under concurrency, single activation of a printed QR under a race, unsold QR denied at the gate, the spec §6 reconciliation example (750 / 700 → 50.000 TND discrepancy), no self-reconciliation, append-only financial history, reservations never touching paid inventory, reservation admission respecting paid-holder priority, exactly-once check-in, and no plaintext CIN in the database, logs or emails.
 
+## Deploy on Vercel
+
+1. **Import** the GitHub repo in Vercel (Framework: Next.js). `vercel.json` already sets the build
+   (`prisma migrate deploy && next build`), the Frankfurt region (`fra1`) and the daily cron jobs.
+2. **Database:** Storage → Create → **Neon**, region **Frankfurt (eu-central-1)**, and connect it to the project.
+   This creates `DATABASE_URL` and `DATABASE_URL_UNPOOLED` for you; migrations run on every deploy.
+3. **Environment variables** (Settings → Environment Variables → Production). Generate each secret with
+   `openssl rand -base64 32` — new values, never the ones from your local `.env`:
+
+   | Variable | Value |
+   |---|---|
+   | `SESSION_SECRET` | random secret |
+   | `CIN_ENC_KEY` | random 32-byte key (base64) — **back it up**: losing it makes stored IDs unreadable |
+   | `CIN_HMAC_KEY` | a different random 32-byte key (base64) |
+   | `CIN_ENC_KEY_VERSION` | `1` |
+   | `CIN_RETENTION_DAYS` | `365` |
+   | `APP_URL` | your site, e.g. `https://onda.vercel.app` |
+   | `SMTP_URL` / `MAIL_FROM` | your email provider (see `.env.example`) |
+   | `CRON_SECRET` | random secret (Vercel sends it to the cron jobs) |
+
+   The site refuses to start if any of these is missing or weak — check the deployment logs if it does.
+4. **Deploy**, then create the first Team Leader from your computer (uses the live database once):
+
+   ```bash
+   DATABASE_URL="<DATABASE_URL_UNPOOLED from Vercel>" npm run create-leader -- "Your Name" you@example.com
+   ```
+
+   It prints a temporary password once; sign in and change it under **My account**. Never run `db:seed`
+   against the live database (it refuses to).
+5. **Email from Vercel:** Vercel's servers have changing IP addresses, so in Brevo go to
+   Security → Authorized IPs and **deactivate IP blocking** (otherwise Brevo rejects the site's emails).
+
+Notes: Vercel's free Hobby plan is for non-commercial use; selling tickets needs the Pro plan.
+The in-memory rate limiter is per server instance on Vercel; the per-account login lockout is stored in the database and always applies.
+
 ## Ticket emails
 
 After every sale the **buyer** receives all their tickets by email and each **attendee** receives their own: QR code,

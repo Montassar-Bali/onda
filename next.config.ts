@@ -15,6 +15,15 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   serverExternalPackages: ["@prisma/client", "bcryptjs"],
+  // Files read from disk at runtime (PDF tickets and ticket emails). On Vercel, functions only contain
+  // traced files, and /public is served by the CDN — so these must be bundled explicitly.
+  outputFileTracingIncludes: {
+    "/**/*": [
+      "./node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-{400,700,800}-normal.woff",
+      "./public/brand/onda-logo-email.png",
+      "./public/brand/tropical-bar.png",
+    ],
+  },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },

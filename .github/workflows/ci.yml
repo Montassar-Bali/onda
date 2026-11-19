@@ -31,7 +31,9 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npx prisma generate
+        env:
+          DATABASE_URL: postgresql://tropical:ci-only-password@localhost:5433/tropical_test
+          DATABASE_URL_UNPOOLED: postgresql://tropical:ci-only-password@localhost:5433/tropical_test
       - run: npm run typecheck
       - run: npm test
       - name: Dependency audit (fails on critical runtime vulnerabilities)
@@ -41,3 +43,4 @@ jobs:
         env:
           SESSION_SECRET: ci-build-only-secret-not-used-anywhere-000000
           DATABASE_URL: postgresql://tropical:ci-only-password@localhost:5433/tropical_test
+          DATABASE_URL_UNPOOLED: postgresql://tropical:ci-only-password@localhost:5433/tropical_test
