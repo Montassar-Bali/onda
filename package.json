@@ -27,7 +27,7 @@
     "@pdf-lib/fontkit": "^1.1.1",
     "@prisma/client": "^6.19.3",
     "bcryptjs": "^2.4.3",
-    "jose": "^5.10.0",
+    "jose": "^6.2.18",
     "jsqr": "^1.4.0",
     "next": "^15.5.29",
     "nodemailer": "^10.6.0",
